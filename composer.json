@@ -1,0 +1,45 @@
+{
+    "name": "michaelbunker/trimet-sdk",
+    "description": "A PHP SDK for interacting with the TriMet API.",
+    "keywords": [
+        "php",
+        "trimet",
+        "portland",
+        "PDX",
+        "API",
+        "SDK"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Bunker",
+            "email": "michaelbunker1@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/property-access": "^5.1",
+        "symfony/property-info": "^5.1",
+        "symfony/serializer": "^5.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "TriMet\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TriMet\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    }
+}
