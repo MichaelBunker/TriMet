@@ -2,14 +2,14 @@
 
 namespace Tests\Serializer;
 
-use PHPUnit\Framework\TestCase;
 use TriMet\Models\Arrival;
 use TriMet\Models\BlockPosition;
 use TriMet\Models\Response;
 use TriMet\Models\Trip;
 use TriMet\Serializer\DeSerializer;
+use TriMet\Tests\TriMetBaseTestCase;
 
-final class DeSerializerTest extends TestCase
+final class DeSerializerTest extends TriMetBaseTestCase
 {
     /**
      * @covers \TriMet\Serializer\DeSerializer::convert
@@ -47,7 +47,6 @@ final class DeSerializerTest extends TestCase
         $this->assertEquals(12076, $trip->destDist);
         $this->assertEquals("197th (EB)", $trip->desc);
     }
-
 
     private function JsonData()
     {

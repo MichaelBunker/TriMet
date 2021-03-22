@@ -15,12 +15,8 @@ class DeSerializer
 {
     /**
      * This is a very simple deserializer that converts all requests to the TriMet API to a Response object.
-     *
-     * @param $data
-     *
-     * @return object|array
      */
-    public function convert($data)
+    public function convert(mixed $data): array|object
     {
         $encoders    = [new JsonEncoder()];
         $normalizers = [new ArrayDenormalizer(), new ObjectNormalizer(null, null, null, new PhpDocExtractor())];

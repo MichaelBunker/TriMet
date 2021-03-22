@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace TriMet;
 
 use TriMet\Integration\Wrapper;
+use TriMet\Models\TriMetModel;
 use TriMet\Serializer\DeSerializer;
 
 /**
@@ -39,9 +40,9 @@ class API
      * @return array|object
      *
      */
-    public function getArrivals(int $locationId, int $minutes = 20, int $arrivals = 2)
+    public function getArrivals(int $locationId, int $minutes = 20, int $arrivals = 2): array|TriMetModel
     {
-        $result = $this->getApi()->get(
+        $result = $this->apiWrapper->get(
             'v2/arrivals',
             [
                 'locIDs'        => $locationId,
@@ -50,10 +51,10 @@ class API
                 'arrivals'      => $arrivals
             ]
         );
-        $body = $result->getBody();
-        $data = json_decode($body ? $body->getContents() : null);
+        $data = json_decode($result->getBody()?->getContents());
+        $converted = $this->serializer->convert($data->resultSet);
 
-        return $this->getSerializer()->convert($data->resultSet);
+        return $converted;
     }
 
     /**
@@ -77,25 +78,19 @@ class API
             $params = array_merge($params, ['locIDs' => implode(',', $locationIds)]);
         }
 
-        $result = $this->getApi()->get('v2/alerts', $params);
-        $data   = json_decode($result->getBody()->getContents());
+        $result = $this->apiWrapper->get('v2/alerts', $params);
+        $data   = json_decode($result->getBody()?->getContents());
 
-        return $this->getSerializer()->convert($data->resultSet);
+        return $this->serializer->convert($data->resultSet);
     }
 
     /**
-     * @param int      $locationId
-     * @param int      $begin
-     * @param int|null $end
-     * @param int      $minutes
-     * @param int      $arrivals
+     * Get Arrivals by a date range.
      *
      * @throws Integration\TriMetException
      *
-     * @return array|object
-     *
      */
-    public function getArrivalsByDateRange(int $locationId, int $begin, int $end = null, int $minutes = 20, int $arrivals = 2)
+    public function getArrivalsByDateRange(int $locationId, int $begin, int $end = null, int $minutes = 20, int $arrivals = 2): array|object
     {
         $params = [
             'locIDs'        => $locationId,
@@ -109,10 +104,10 @@ class API
             $params = array_merge($params, ['end' => $end]);
         }
 
-        $result = $this->getApi()->get('v2/arrivals', $params);
-        $data   = json_decode($result->getBody()->getContents());
+        $result = $this->apiWrapper->get('v2/arrivals', $params);
+        $data   = json_decode($result->getBody()?->getContents());
 
-        return $this->getSerializer()->convert($data->resultSet);
+        return $this->serializer->convert($data->resultSet);
     }
 
     /**
@@ -127,9 +122,9 @@ class API
      * @return array|object
      *
      */
-    public function getStops(float $longitude, float $latitude, int $feet = 1000)
+    public function getStops(float $longitude, float $latitude, int $feet = 1000): array|object
     {
-        $result = $this->getApi()->get(
+        $result = $this->apiWrapper->get(
             'v1/stops',
             [
                 'll'            => $longitude . ',' . $latitude,
@@ -137,24 +132,8 @@ class API
                 'showRouteDirs' => 'true'
             ]
         );
-        $data = json_decode($result->getBody()->getContents());
+        $data = json_decode($result->getBody()?->getContents());
 
-        return $this->getSerializer()->convert($data->resultSet);
-    }
-
-    /**
-     * @codeCoverageIgnore
-     */
-    protected function getApi(): Wrapper
-    {
-        return $this->apiWrapper;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     */
-    public function getSerializer(): DeSerializer
-    {
-        return $this->serializer;
+        return $this->serializer->convert($data->resultSet);
     }
 }

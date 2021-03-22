@@ -1,27 +1,31 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+namespace TriMet\Tests;
 
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
+use GuzzleHttp\Psr7\Utils;
+use PHPUnit\Framework\MockObject\MockObject;
 use TriMet\API;
 use TriMet\Integration\TriMetException;
 use TriMet\Integration\Wrapper;
 use TriMet\Models\TriMetModel;
 use TriMet\Serializer\DeSerializer;
-use function GuzzleHttp\Psr7\stream_for;
 
-final class APITest extends TestCase
+final class APITest extends TriMetBaseTestCase
 {
-    protected $serializer;
-    protected $wrapper;
-    protected $class;
+    protected API $class;
+    protected DeSerializer $serializer;
+    protected MockObject $wrapper;
 
     public function setUp(): void
     {
-        $this->serializer = $this->createMock(DeSerializer::class);
+        $this->class      = new API("fakeApplicationID");
+        $this->serializer = new DeSerializer();
         $this->wrapper    = $this->createMock(Wrapper::class);
-        $this->class      = $this->createPartialMock(API::class, ['getApi', 'getSerializer']);
-        $this->class->expects($this->any())->method('getApi')->willReturn($this->wrapper);
-        $this->class->expects($this->any())->method('getSerializer')->willReturn($this->serializer);
+
+        $this->setProtectedProperty($this->class, 'apiWrapper', $this->wrapper);
     }
 
     /**
@@ -29,6 +33,7 @@ final class APITest extends TestCase
      */
     public function testExceptionForGetArrivals(): void
     {
+
         $this->expectException(TriMetException::class);
         $this->wrapper
             ->expects($this->once())
@@ -43,9 +48,6 @@ final class APITest extends TestCase
                 ]
             )
             ->willThrowException(new TriMetException());
-        $this->serializer
-            ->expects($this->never())
-            ->method('convert');
 
         $this->class->getArrivals(1, 1, 1);
     }
@@ -55,9 +57,8 @@ final class APITest extends TestCase
      */
     public function testGetArrivals(): void
     {
-        $content    = stream_for('{"resultSet": "bar"}');
+        $content    = Utils::streamFor('{"resultSet": "bar"}');
         $response   = new Response(200, [], $content);
-        $model      = new TriMetModel();
 
         $this->wrapper
             ->expects($this->once())
@@ -72,15 +73,10 @@ final class APITest extends TestCase
                 ]
             )
             ->willReturn($response);
-        $this->serializer
-            ->expects($this->once())
-            ->method('convert')
-            ->with("bar")
-            ->willReturn($model);
 
         $result = $this->class->getArrivals(1, 33, 5);
 
-        $this->assertEquals($model, $result);
+        $this->assertInstanceOf(TriMetModel::class, $result);
     }
 
     /**
@@ -88,9 +84,8 @@ final class APITest extends TestCase
      */
     public function testGetArrivalsByDateRange(): void
     {
-        $content    = stream_for('{"resultSet": "bar"}');
+        $content    = Utils::streamFor('{"resultSet": "bar"}');
         $response   = new Response(200, [], $content);
-        $model      = new TriMetModel();
 
         $this->wrapper
             ->expects($this->once())
@@ -107,15 +102,10 @@ final class APITest extends TestCase
                 ]
             )
             ->willReturn($response);
-        $this->serializer
-            ->expects($this->once())
-            ->method('convert')
-            ->with("bar")
-            ->willReturn($model);
 
         $result = $this->class->getArrivalsByDateRange(1, 1600695649, 1600743882, 33, 5);
 
-        $this->assertEquals($model, $result);
+        $this->assertInstanceOf(TriMetModel::class, $result);
     }
 
     /**
@@ -123,9 +113,8 @@ final class APITest extends TestCase
      */
     public function testGetAlerts(): void
     {
-        $content    = stream_for('{"resultSet": "bar"}');
+        $content    = Utils::streamFor('{"resultSet": "bar"}');
         $response   = new Response(200, [], $content);
-        $model      = new TriMetModel();
 
         $this->wrapper
             ->expects($this->once())
@@ -138,15 +127,10 @@ final class APITest extends TestCase
                 ]
             )
             ->willReturn($response);
-        $this->serializer
-            ->expects($this->once())
-            ->method('convert')
-            ->with("bar")
-            ->willReturn($model);
 
         $result = $this->class->getAlerts([38384], [99898]);
 
-        $this->assertEquals($model, $result);
+        $this->assertInstanceOf(TriMetModel::class, $result);
     }
 
     /**
@@ -154,9 +138,8 @@ final class APITest extends TestCase
      */
     public function testGetStops(): void
     {
-        $content    = stream_for('{"resultSet": "bar"}');
+        $content    = Utils::streamFor('{"resultSet": "bar"}');
         $response   = new Response(200, [], $content);
-        $model      = new TriMetModel();
 
         $this->wrapper
             ->expects($this->once())
@@ -170,16 +153,9 @@ final class APITest extends TestCase
                 ]
             )
             ->willReturn($response);
-        $this->serializer
-            ->expects($this->once())
-            ->method('convert')
-            ->with("bar")
-            ->willReturn($model);
 
         $result = $this->class->getStops(98.1241, 84.45453, 343432);
 
-        $this->assertEquals($model, $result);
+        $this->assertInstanceOf(TriMetModel::class, $result);
     }
-
-
 }

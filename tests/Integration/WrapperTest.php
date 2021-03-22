@@ -6,13 +6,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use TriMet\Integration\NotImplementedException;
 use TriMet\Integration\TriMetException;
 use TriMet\Integration\Wrapper;
+use TriMet\Tests\TriMetBaseTestCase;
 
-final class WrapperTest extends TestCase
+final class WrapperTest extends TriMetBaseTestCase
 {
     /**
      * @covers \TriMet\Integration\Wrapper::get
