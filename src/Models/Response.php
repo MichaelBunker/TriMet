@@ -7,9 +7,9 @@ namespace TriMet\Models;
 class Response extends TriMetModel
 {
     /**
-     * @var int
+     * @var mixed
      */
-    public ?int $queryTime = null;
+    public mixed $queryTime = null;
     /**
      * @var Location[]
      */

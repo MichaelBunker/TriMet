@@ -1,0 +1,11 @@
+language: php
+
+php:
+  - 8.0
+
+before_script:
+  - composer install
+
+notifications:
+  email:
+    - michaelbunker1@gmail.com

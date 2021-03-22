@@ -11,9 +11,9 @@ class Route extends TriMetModel
      */
     public ?string $routeColor;
     /**
-     * @var string|null
+     * @var bool|null
      */
-    public ?string $frequentService;
+    public ?bool $frequentService;
     /**
      * @var int|null
      */

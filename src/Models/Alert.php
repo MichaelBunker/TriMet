@@ -15,9 +15,9 @@ class Alert extends TriMetModel
      */
     public ?string $info_link_url;
     /**
-     * @var string|null
+     * @var int|null
      */
-    public ?string $end;
+    public ?int $end;
     /**
      * @var bool|null
      */
